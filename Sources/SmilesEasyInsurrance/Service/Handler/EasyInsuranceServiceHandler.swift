@@ -12,11 +12,13 @@ import SmilesBaseMainRequestManager
 
 protocol EasyInsuranceServiceHandlerProtocol {
     
-    func getOrderRating(ratingType: String, contentType: String, isLiveTracking: Bool, orderId: String) -> AnyPublisher<GetOrderRatingResponse, NetworkError>
+    func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkError>
     
 }
 
 final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
+    
+    
     
     // MARK: - Properties
     private let repository: EasyInsuranceServiceable
@@ -27,13 +29,14 @@ final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
     }
     
     // MARK: - Functions
-    
-    
-    func getOrderRating(ratingType: String, contentType: String, isLiveTracking: Bool, orderId: String) -> AnyPublisher<GetOrderRatingResponse, NetworkError> {
+    func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkingLayer.NetworkError> {
+        let request = EasyInsuranceRequestModel()
         
-        let request = GetOrderRatingRequest(ratingType: ratingType, contentType: contentType, isLiveTracking: isLiveTracking, orderId: orderId)
-        return repository.getOrderRatingService(request: request)
+        return repository.getInsuranceDetail(request: request)
+            
     }
+    
+    
 }
 
 

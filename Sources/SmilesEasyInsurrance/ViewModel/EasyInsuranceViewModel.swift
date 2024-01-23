@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import SmilesScratchHandler
+//import SmilesScratchHandler
 import SmilesUtilities
 
 final class EasyInsuranceViewModel {

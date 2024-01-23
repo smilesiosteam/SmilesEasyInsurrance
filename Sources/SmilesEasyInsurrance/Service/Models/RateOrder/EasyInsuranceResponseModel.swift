@@ -21,5 +21,6 @@ struct EasyInsuranceResponseModel: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.title = try container.decodeIfPresent(String.self, forKey: .title)
     }
+    
     init(){}
 }
