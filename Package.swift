@@ -38,10 +38,13 @@ let package = Package(
                 .product(name: "SmilesLoader", package: "SmilesLoader"),
                 .product(name: "SDWebImage", package: "SDWebImage"),
                 .product(name: "SmilesSharedServices", package: "SmilesSharedServices")
-            ]
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "SmilesEasyInsurranceTests",
-            dependencies: ["SmilesEasyInsurrance"]),
+            dependencies: ["SmilesEasyInsurrance"],
+            resources: [.process("Resources")]
+        ),
     ]
 )

@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EasyInsuranceVC" customModuleProvider="target">
             <connections>
+                <outlet property="easyInsuranceTableView" destination="eMj-2x-io4" id="VBA-Mk-xwm"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
