@@ -43,8 +43,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SmilesEasyInsurranceTests",
-            dependencies: ["SmilesEasyInsurrance"],
-            resources: [.process("Resources")]
+            dependencies: ["SmilesEasyInsurrance"]
         ),
     ]
 )
