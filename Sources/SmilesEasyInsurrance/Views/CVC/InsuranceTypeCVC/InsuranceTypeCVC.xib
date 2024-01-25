@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="InsuranceTypeCVC" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="InsuranceTypeCVC" customModule="SmilesEasyInsurrance">
             <rect key="frame" x="0.0" y="0.0" width="164" height="128"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -48,7 +48,6 @@
             </constraints>
             <connections>
                 <outlet property="image" destination="7sC-CY-csC" id="EMK-ge-rXv"/>
-                <outlet property="title" destination="pDN-48-gmf" id="KI3-S5-xpb"/>
                 <outlet property="titleLbl" destination="pDN-48-gmf" id="Zup-nz-PmT"/>
             </connections>
             <point key="canvasLocation" x="-21" y="20"/>

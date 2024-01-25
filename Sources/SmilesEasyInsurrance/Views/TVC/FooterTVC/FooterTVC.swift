@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import SmilesFontsManager
+import SmilesUtilities
 
 class FooterTVC: UITableViewCell {
     
     //MARK: - Outlets //
     @IBOutlet weak var descLbl: UILabel!{
         didSet{
+            self.descLbl.semanticContentAttribute =  AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
             self.descLbl.fontTextStyle = .smilesBody3
             self.descLbl.textColor = UIColor(hexString: "#000000")
         }

@@ -25,5 +25,7 @@ struct EasyInsuranceResponseModel: Codable {
         self.image = try container.decodeIfPresent(String.self, forKey: .image)
     }
     
-    init(){}
+    init(title:String? = nil){
+        self.title = title
+    }
 }

@@ -20,6 +20,7 @@ public final class EasyInsuranceVC: UIViewController {
     private var cancellables: Set<AnyCancellable> = []
     
     var viewModel: EasyInsuranceViewModel!
+    var insurancetype: [EasyInsuranceResponseModel]?
     lazy  var backButton: UIButton = UIButton(type: .custom)
     //MARK: ViewLifeCycle
     public override func viewDidLoad() {
@@ -35,19 +36,15 @@ public final class EasyInsuranceVC: UIViewController {
         if #available(iOS 15.0, *) {
             self.easyInsuranceTableView.sectionHeaderTopPadding = CGFloat(0)
         }
+        insurancetype = [EasyInsuranceResponseModel(title: "Habib"),EasyInsuranceResponseModel(title: "Habib")]
+        
         easyInsuranceTableView.sectionHeaderHeight = UITableView.automaticDimension
         easyInsuranceTableView.estimatedSectionHeaderHeight = 1
         easyInsuranceTableView.delegate = self
         easyInsuranceTableView.dataSource = self
         easyInsuranceTableView.contentInsetAdjustmentBehavior = .never
-        
-       
-//        self.easyInsuranceTableView.registerCellFromNib(EasyInsuranceTVC.self,withIdentifier:  String(describing: EasyInsuranceTVC.self))
-//        self.easyInsuranceTableView.registerCellFromNib(FooterTVC.self,withIdentifier:  String(describing: FooterTVC.self))
-        
         let customizable: CellRegisterable? = EasyInsuranceCellRegistration()
         customizable?.register(for: self.easyInsuranceTableView)
-        
         self.easyInsuranceTableView.backgroundColor = .white
     }
     
