@@ -31,11 +31,12 @@ public final class EasyInsuranceVC: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        bind(to: viewModel)
     }
     
     
     //MARK: - customUI
-    func setupTableView() {
+    fileprivate func setupTableView() {
         self.setUpNavigationBar(true)
         self.easyInsuranceTableView.sectionFooterHeight = .leastNormalMagnitude
         if #available(iOS 15.0, *) {
@@ -63,15 +64,27 @@ public final class EasyInsuranceVC: UIViewController {
         self.navigationItem.standardAppearance = appearance
         self.navigationItem.scrollEdgeAppearance = appearance
         
+        let imageView = UIImageView()
+        NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 24),
+            imageView.widthAnchor.constraint(equalToConstant: 24)
+        ])
+        imageView.tintColor = .black
+//        imageView.sd_setImage(with: URL(string: "headerData.iconUrl" ?? "")) { image, _, _, _ in
+//            imageView.image = image?.withRenderingMode(.alwaysTemplate)
+//        }
+        imageView.image = UIImage(named: "iconsCategory")
         let locationNavBarTitle = UILabel()
-        locationNavBarTitle.text = "Easy_Insurance_navTitle".localizedString
+        locationNavBarTitle.text = "INSURANCE".localizedString.capitalized
         locationNavBarTitle.textColor = .black
         locationNavBarTitle.fontTextStyle = .smilesHeadline4
-        self.navigationItem.titleView = locationNavBarTitle
-        
+        let hStack = UIStackView(arrangedSubviews: [imageView, locationNavBarTitle])
+        hStack.spacing = 4
+        hStack.alignment = .center
+        self.navigationItem.titleView = hStack
         
         self.backButton = UIButton(type: .custom)
-        self.backButton.setImage(UIImage(named: AppCommonMethods.languageIsArabic() ? "back_arrow_ar" : "back_arrow_eng", in: .module, compatibleWith: nil)?.withTintColor(.black), for: .normal)
+        self.backButton.setImage(UIImage(named: AppCommonMethods.languageIsArabic() ? "back_icon_ar" : "back_icon", in: .module, compatibleWith: nil)?.withTintColor(.black), for: .normal)
         self.backButton.addTarget(self, action: #selector(self.onClickBack), for: .touchUpInside)
         self.backButton.frame = CGRect(x: 0, y: 0, width: 32, height: 32)
         self.backButton.backgroundColor = .white
@@ -166,7 +179,7 @@ extension EasyInsuranceVC {
 extension EasyInsuranceVC {
     
     func bind(to viewModel: EasyInsuranceViewModel) {
-        input = PassthroughSubject<EasyInsuranceViewModel.Input, Never>()
+        self.input = PassthroughSubject<EasyInsuranceViewModel.Input, Never>()
         let output = viewModel.transform(input: input.eraseToAnyPublisher())
         output
             .sink { [weak self] event in
