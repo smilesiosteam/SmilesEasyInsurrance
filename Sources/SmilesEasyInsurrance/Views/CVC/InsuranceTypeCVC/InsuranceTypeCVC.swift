@@ -21,19 +21,19 @@ class InsuranceTypeCVC: UICollectionViewCell {
     
     @IBOutlet weak var image: UIImageView! {
         didSet{
-            self.layer.cornerRadius = 8.0
+            self.image.layer.cornerRadius = 8.0
+            self.image.contentMode = .scaleAspectFill
         }
     }
     
+    
+    
+    //MARK: - Properties
     var model: EasyInsuranceResponseModel! {
         didSet{
             setupCVC(model: model)
         }
     }
-    
-    
-    //MARK: - Properties
-    
     
     //MARK: - Cell Methods
     override func awakeFromNib() {

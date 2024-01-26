@@ -4,27 +4,26 @@
 //
 //  Created by Habib Rehman on 22/01/2024.
 //
-
+import UIKit
 import Foundation
 import SmilesUtilities
-import UIKit
+import SmilesSharedServices
 
 
 class EasyInsuranceTVC: UITableViewCell {
     
-    
+    //MARK: -  Outlets
     @IBOutlet weak var collectionView: UICollectionView!
     
-    
+    //MARK: -  Properties
+    var callBack: ((EasyInsuranceResponseModel) -> ())?
     var updateCellData: [EasyInsuranceResponseModel]?{
         didSet{
             self.collectionView?.reloadData()
         }
     }
     
-    var callBack: ((EasyInsuranceResponseModel) -> ())?
-    
-    
+    //MARK: -  Methods
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -42,6 +41,7 @@ class EasyInsuranceTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    //MARK: -  Compositional Layout
     func setupCollectionViewLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection? in
             
@@ -69,17 +69,11 @@ class EasyInsuranceTVC: UITableViewCell {
             return section
         }
     }
-
-
-
-
-    
     
 }
 
 extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return 12
         return updateCellData?.count ?? 0
     }
     
