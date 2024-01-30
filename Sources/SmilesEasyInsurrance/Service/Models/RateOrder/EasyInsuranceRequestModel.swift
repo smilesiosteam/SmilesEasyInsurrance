@@ -11,19 +11,18 @@ import SmilesBaseMainRequestManager
 
 final class EasyInsuranceRequestModel: SmilesBaseMainRequest {
     // MARK: - Properties
-    var title: String?
-    
+    var categoryId: Int?
     
     // MARK: - CodingKeys
     enum CodingKeys: String, CodingKey {
-        case title
+        case categoryId
         
     }
     
     // MARK: - Lifecycle
-    init(title: String? = nil) {
+    init(categoryId: Int? = nil) {
         super.init()
-        self.title = title
+        self.categoryId = categoryId
     }
     
     required init(from decoder: Decoder) throws {
@@ -33,7 +32,7 @@ final class EasyInsuranceRequestModel: SmilesBaseMainRequest {
     override func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(self.title, forKey: .title)
+        try container.encodeIfPresent(self.categoryId, forKey: .categoryId)
         
     }
 }

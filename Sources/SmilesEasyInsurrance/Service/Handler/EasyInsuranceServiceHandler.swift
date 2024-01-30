@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Habib Rehman on 22/01/2024.
 //
@@ -11,14 +11,10 @@ import NetworkingLayer
 import SmilesBaseMainRequestManager
 
 protocol EasyInsuranceServiceHandlerProtocol {
-    
     func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkError>
-    
 }
 
 final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
-    
-    
     
     // MARK: - Properties
     private let repository: EasyInsuranceServiceable
@@ -31,11 +27,9 @@ final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
     // MARK: - Functions
     func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkingLayer.NetworkError> {
         let request = EasyInsuranceRequestModel()
-        
         return repository.getInsuranceDetail(request: request)
-            
+        
     }
-    
     
 }
 

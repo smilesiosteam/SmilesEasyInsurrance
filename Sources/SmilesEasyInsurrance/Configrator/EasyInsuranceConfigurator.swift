@@ -43,6 +43,7 @@ public enum EasyInsuranceConfigurator {
         let viewModel = EasyInsuranceViewModel()
         let viewController = EasyInsuranceVC.create()
         viewController.viewModel = viewModel
+//        viewController.delegate = navigationDelegate
         return viewController
     }
     

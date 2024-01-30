@@ -11,93 +11,49 @@ import SmilesReusableComponents
 import SmilesSharedServices
 import SmilesUtilities
 
-extension EasyInsuranceVC: UITableViewDelegate, UITableViewDataSource{
+extension EasyInsuranceVC: UITableViewDelegate{
     
     //MARK: - DidSelect Method
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: indexPath.section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
+        switch getSectionIdentifier(for: indexPath.section) {
+        case EasyInsuranceSectionIdentifier.insuranceType:
            break
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
+        case EasyInsuranceSectionIdentifier.faq:
              if let faqIndex = getSectionIndex(for: .faq), faqIndex == indexPath.section {
                 let faqDetail = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<FaqsDetail>)?.models?[safe: indexPath.row] as? FaqsDetail)
                 faqDetail?.isHidden = !(faqDetail?.isHidden ?? true)
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
-        default:
-            break
         }
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
-            return 1
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
-            return 4
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            return 0
-        default:
-            return 0
-        }
-    }
-    
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
-    }
-    
-    // MARK: - For Outer TableView CellConfiguration
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: indexPath.section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: EasyInsuranceTVC.self), for: indexPath) as! EasyInsuranceTVC
-            return cell
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: FAQTableViewCell.self), for: indexPath) as! FAQTableViewCell
-            return cell
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: FooterTVC.self), for: indexPath) as! FooterTVC
-            return cell
-        default:
-            return UITableViewCell()
-        }
-        
-        
-        
-    }
+
     
     // MARK: - For Outer TableView HeaderView Configuration
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
+        switch getSectionIdentifier(for: section) {
+        case EasyInsuranceSectionIdentifier.insuranceType:
             let header = SectionHeader()
+            header.titleLabel.text = self.insuranceTypeResponse?.insurance?.subTitle ?? ""
+            header.subTitleLabel.text = self.insuranceTypeResponse?.insurance?.description ?? ""
             return header
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
+        case EasyInsuranceSectionIdentifier.faq:
             let header = SectionHeader()
             header.titleLabel.text = "FAQs"
             header.subTitleLabel.text = ""
             return header
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            return nil
-        default:
-            return nil
+        
         }
         
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
+        switch getSectionIdentifier(for: section) {
+        case EasyInsuranceSectionIdentifier.insuranceType:
             return CGFloat.leastNormalMagnitude
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
+        case EasyInsuranceSectionIdentifier.faq:
             return CGFloat.leastNormalMagnitude
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            return 0
-        default:
-            return 0
         }
         
         
@@ -105,38 +61,31 @@ extension EasyInsuranceVC: UITableViewDelegate, UITableViewDataSource{
     
     // MARK: - For Outer TableView HeaderView Heights
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
+        switch getSectionIdentifier(for: section) {
+        case EasyInsuranceSectionIdentifier.insuranceType:
             return UITableView.automaticDimension
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
+        case EasyInsuranceSectionIdentifier.faq:
             return UITableView.automaticDimension
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            return 0
-        default:
-            return 0
         }
         
     }
     
     // MARK: - For Outer TableView Row Height
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        switch self.insuranceTypesSectionsData?.sectionDetails?[safe: indexPath.section]?.sectionIdentifier {
-        case EasyInsuranceSectionIdentifier.insuranceType.rawValue:
-            if let insuranceTypeList = self.insurancetype, !insuranceTypeList.isEmpty {
-                switch insuranceTypeList.count {
+        switch getSectionIdentifier(for: indexPath.section) {
+        case EasyInsuranceSectionIdentifier.insuranceType:
+            if let insuranceTypeList = self.insuranceTypeResponse {
+                switch insuranceTypeList.insurance?.insuranceTypes?.count {
+                case 0:
+                    return 0
                 case 1,2:
                     return 128.0
                 default:
                     return 270.0
                 }
             }
-        case EasyInsuranceSectionIdentifier.faq.rawValue:
+        case EasyInsuranceSectionIdentifier.faq:
             return UITableView.automaticDimension
-        case EasyInsuranceSectionIdentifier.footer.rawValue:
-            return UITableView.automaticDimension
-        default:
-            return 0
         }
         return 0
     }

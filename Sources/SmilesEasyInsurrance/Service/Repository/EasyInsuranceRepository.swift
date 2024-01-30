@@ -18,8 +18,6 @@ protocol EasyInsuranceServiceable {
 
 final class EasyInsuranceRepository: EasyInsuranceServiceable {
     
-    
-    
     // MARK: - Properties
     private let networkRequest: Requestable
     

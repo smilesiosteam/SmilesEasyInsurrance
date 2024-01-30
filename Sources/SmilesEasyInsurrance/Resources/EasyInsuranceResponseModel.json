@@ -1,0 +1,27 @@
+{
+    "insurance": {
+        "title": "Insurance",
+        "insuranceIconUrl": "Test Icon URL",
+        "subTitle": "Insurance for all your need",
+        "description": "Choose your insurance type",
+        "insuranceTypes": [
+            {
+                "insuranceTypeImageUrl": "Test Image URL",
+                "redirectionUrl": "Test Redirection URL",
+                "insuranceTypeTitle": "Health"
+            },
+            { "insuranceTypeImageUrl": "Test Image URL", 
+                "redirectionUrl": "Test Redirection URL",
+                "insuranceTypeTitle": "Travel"
+            },
+            { "insuranceTypeImageUrl": "Test Image URL",
+                "redirectionUrl": "Test Redirection URL",
+                "insuranceTypeTitle": "Education"
+            },
+            { "insuranceTypeImageUrl": "Test Image URL",
+                "redirectionUrl": "Test Redirection URL",
+                "insuranceTypeTitle": "Wedding"
+            }
+        ]
+    }
+}

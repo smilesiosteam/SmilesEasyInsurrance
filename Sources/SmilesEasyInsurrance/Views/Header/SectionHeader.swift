@@ -35,8 +35,13 @@ class SectionHeader: UIView {
         addSubview(mainView)
         mainView.frame = bounds
         mainView.bindFrameToSuperviewBounds()
+        
         titleLabel.fontTextStyle = .smilesHeadline2
         subTitleLabel.fontTextStyle = .smilesBody3
+        
+        titleLabel.semanticContentAttribute = AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
+        subTitleLabel.semanticContentAttribute = AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
+        
         titleLabel.textColor = .black
         subTitleLabel.textColor = .black.withAlphaComponent(0.8)
         
@@ -47,8 +52,6 @@ class SectionHeader: UIView {
     func setupData(title: String?, subTitle: String?, color: UIColor?,section:Int?, isPostSub:Bool = false) {
         titleLabel.localizedString = title ?? ""
         subTitleLabel.localizedString = subTitle ?? ""
-        titleLabel.semanticContentAttribute = AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
-        subTitleLabel.semanticContentAttribute = AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
     }
     
 }

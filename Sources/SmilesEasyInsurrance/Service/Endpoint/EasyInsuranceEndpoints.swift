@@ -14,7 +14,7 @@ enum EasyInsuranceEndpoints {
     var url: String {
         switch self {
         case .getInsuranceDetail:
-            return "insurance/"
+            return "home/v1/insurance-details"
         }
     }
 }

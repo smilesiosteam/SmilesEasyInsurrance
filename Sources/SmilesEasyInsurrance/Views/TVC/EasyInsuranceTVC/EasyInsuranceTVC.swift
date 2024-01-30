@@ -16,8 +16,10 @@ class EasyInsuranceTVC: UITableViewCell {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: -  Properties
-    var callBack: ((EasyInsuranceResponseModel) -> ())?
-    var updateCellData: [EasyInsuranceResponseModel]?{
+    var callBack: ((InsuranceType) -> ())?
+    
+    
+    var updateCellData: [InsuranceType]?{
         didSet{
             self.collectionView?.reloadData()
         }
@@ -27,7 +29,7 @@ class EasyInsuranceTVC: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        updateCellData = [EasyInsuranceResponseModel(title: "Habib"),EasyInsuranceResponseModel(title: "Habib")]
+        
         collectionView.register(UINib(nibName: String(describing: InsuranceTypeCVC.self), bundle: .module), forCellWithReuseIdentifier: String(describing: InsuranceTypeCVC.self))
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -82,13 +84,13 @@ extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if let data = updateCellData?[safe: indexPath.row] {
+        if let data = updateCellData?[safe: indexPath.row] {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InsuranceTypeCVC", for: indexPath) as? InsuranceTypeCVC else {return UICollectionViewCell()}
             
-//            cell.model = data
+            cell.model = data
             return cell
-//        }
-//        return UICollectionViewCell()
+        }
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

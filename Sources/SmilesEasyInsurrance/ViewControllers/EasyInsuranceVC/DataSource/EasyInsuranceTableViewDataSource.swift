@@ -10,6 +10,7 @@ import SmilesUtilities
 import SmilesSharedServices
 import SmilesReusableComponents
 
+//MARK: - Make For FAQs
 extension TableViewDataSource where Model == FaqsDetail {
     static func make(forFAQs  faqsDetails: [FaqsDetail],
                      reuseIdentifier: String = "FAQTableViewCell", data : String, isDummy:Bool = false, completion:(() -> ())?) -> TableViewDataSource {
@@ -25,3 +26,24 @@ extension TableViewDataSource where Model == FaqsDetail {
         }
     }
 }
+//MARK: - Make For Insurance Types
+
+extension TableViewDataSource where Model == EasyInsuranceResponseModel {
+    static func make(forInsurance  insuranceType: EasyInsuranceResponseModel,
+                     reuseIdentifier: String = "EasyInsuranceTVC", data : String, isDummy:Bool = false, completion:((InsuranceType) -> ())?) -> TableViewDataSource {
+        return TableViewDataSource(
+            models: [insuranceType].filter({$0.insurance?.insuranceTypes?.count ?? 0 > 0}),
+            reuseIdentifier: reuseIdentifier,
+            data: data,
+            isDummy:isDummy
+        ) { (insuranceTypes, cell, data, indexPath) in
+            guard let cell = cell as? EasyInsuranceTVC else {return}
+            cell.updateCellData = insuranceTypes.insurance?.insuranceTypes
+            print(insuranceTypes)
+            cell.callBack = { insuranceType in
+                completion?(insuranceType)
+            }
+        }
+    }
+}
+

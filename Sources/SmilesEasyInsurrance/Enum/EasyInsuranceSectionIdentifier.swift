@@ -11,10 +11,7 @@ import SmilesUtilities
 enum EasyInsuranceSectionIdentifier: String,SectionIdentifierProtocol {
     
     var identifier: String { return self.rawValue}
-    case topPlaceholder = "topPlaceholder"
     case insuranceType = "insuranceType"
     case faq = "faqs"
-    case footer = "footer"
-    
     
 }

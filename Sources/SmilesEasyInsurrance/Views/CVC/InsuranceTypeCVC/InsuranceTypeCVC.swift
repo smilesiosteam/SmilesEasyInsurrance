@@ -29,7 +29,7 @@ class InsuranceTypeCVC: UICollectionViewCell {
     
     
     //MARK: - Properties
-    var model: EasyInsuranceResponseModel! {
+    var model: InsuranceType! {
         didSet{
             setupCVC(model: model)
         }
@@ -41,9 +41,9 @@ class InsuranceTypeCVC: UICollectionViewCell {
        
     }
     
-    func setupCVC(model:EasyInsuranceResponseModel){
-        titleLbl.text = model.title
-        image.setImageWithUrlString(model.image ?? "", defaultImage: "")
+    func setupCVC(model:InsuranceType){
+        titleLbl.text = model.insuranceTypeTitle
+//        image.setImageWithUrlString(model.insuranceTypeImageUrl ?? "" , defaultImage: "In_1")
     }
 
 }

@@ -9,12 +9,13 @@ import Foundation
 import Combine
 import SmilesUtilities
 import SmilesSharedServices
+import NetworkingLayer
 
 final class EasyInsuranceViewModel {
     
     // MARK: - Input
     public enum Input {
-        case fetchInsuranceType(res: EasyInsuranceResponseModel)
+        case fetchInsuranceType(categoryId: Int)
         case getFAQsDetails(faqId: Int)
     }
     
@@ -47,9 +48,8 @@ extension EasyInsuranceViewModel {
         output = PassthroughSubject<Output, Never>()
         input.sink { [weak self] event in
             switch event {
-            case .fetchInsuranceType(let response):
-                self?.output.send(.fetchInsuranceTypeDidSucceed(response: response))
-               
+            case .fetchInsuranceType(let categoryId): 
+                self?.getInsuranceTypes(categoryId: categoryId)
             case .getFAQsDetails(faqId: let faqId):
                 self?.bind(to: self?.faqsViewModel ?? FAQsViewModel())
                 self?.faqsUseCaseInput.send(.getFAQsDetails(faqId: faqId, baseUrl: AppCommonMethods.serviceBaseUrl))
@@ -76,5 +76,34 @@ extension EasyInsuranceViewModel {
                     self?.output.send(.fetchFAQsDidFail(error: error))
                 }
             }.store(in: &cancellables)
+    }
+    
+    private func getInsuranceTypes(categoryId: Int) {
+        let getEasyInsuranceRequest = EasyInsuranceRequestModel(
+            categoryId: categoryId
+        )
+        
+        var network: Requestable {
+            NetworkingLayerRequestable(requestTimeOut: 60)
+        }
+        
+        let service = EasyInsuranceRepository(
+            networkRequest: network)
+        
+        service.getInsuranceDetail(request: getEasyInsuranceRequest)
+            .sink { [weak self] completion in
+                debugPrint(completion)
+                switch completion {
+                case .failure(let error):
+                    self?.output.send(.fetchInsuranceTypeDidfail(error: error))
+                case .finished:
+                    debugPrint("nothing much to do here")
+                }
+            } receiveValue: { [weak self] response in
+                debugPrint("got my response here \(response)")
+                self?.output.send(.fetchInsuranceTypeDidSucceed(response: response))
+                
+            }
+            .store(in: &cancellables)
     }
 }
