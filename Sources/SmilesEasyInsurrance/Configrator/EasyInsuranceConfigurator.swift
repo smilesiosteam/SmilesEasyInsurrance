@@ -12,13 +12,10 @@ import NetworkingLayer
 import SmilesUtilities
 
 public struct EasyInsuranceDependance {
-    public var title: String
-    public var image: String
+    public var categoryId: Int
     
-    
-    public init(title: String, image: String) {
-        self.title = title
-        self.image = image
+    public init(categoryId: Int) {
+        self.categoryId = categoryId
     }
 }
 
@@ -26,7 +23,6 @@ public struct EasyInsuranceDependance {
 public struct EasyInsuranceFAQsDependance {
     public var question: String
     public var answer: String
-    
     
     public init(question: String, answer: String) {
         self.question = question
@@ -43,7 +39,7 @@ public enum EasyInsuranceConfigurator {
         let viewModel = EasyInsuranceViewModel()
         let viewController = EasyInsuranceVC.create()
         viewController.viewModel = viewModel
-//        viewController.delegate = navigationDelegate
+        viewController.navigationdelegate = navigationDelegate
         return viewController
     }
     

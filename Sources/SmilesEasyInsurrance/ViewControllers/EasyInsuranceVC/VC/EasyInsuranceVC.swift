@@ -29,6 +29,8 @@ public final class EasyInsuranceVC: UIViewController {
     var sections = [TableSectionData<EasyInsuranceSectionIdentifier>]()
     var insuranceTypesSectionsData: GetSectionsResponseModel?
     var response: FAQsDetailsResponse?
+    var mutatingSectionDetails = [SectionDetailDO]()
+    var navigationdelegate: EasyInsuranceNavigationProtocol?
     
     //MARK: ViewLifeCycle
     public override func viewDidLoad() {
@@ -108,7 +110,6 @@ public final class EasyInsuranceVC: UIViewController {
         self.sections.removeAll()
         self.sections.append(TableSectionData(index: 0, identifier: .insuranceType))
         self.sections.append(TableSectionData(index: 1, identifier: .faq))
-        configureDataSource()
         
         if let insuranceIndex = getSectionIndex(for: .insuranceType), let response = EasyInsuranceResponseModel.fromModuleFile() {
             dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true, completion: nil)
@@ -116,7 +117,7 @@ public final class EasyInsuranceVC: UIViewController {
         if let faqsIndex = getSectionIndex(for: .faq), let response = FAQsDetailsResponse.fromModuleFile() {
             dataSource?.dataSources?[faqsIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: true, completion: nil)
         }
-        
+        configureDataSource()
         self.input.send(.fetchInsuranceType(categoryId: 14))
         self.input.send(.getFAQsDetails(faqId: 10))
         
@@ -145,9 +146,15 @@ public final class EasyInsuranceVC: UIViewController {
         }
     }
     
-    // MARK: - Navigation
-    
-    
+    // MARK: - configureHideSection
+    fileprivate func configureHideSection<T>(for section: EasyInsuranceSectionIdentifier, dataSource: T.Type) {
+        if let index = getSectionIndex(for: section) {
+            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.models = []
+            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.isDummy = false
+            self.mutatingSectionDetails.removeAll(where: { $0.sectionIdentifier == section.rawValue })
+            self.configureDataSource()
+        }
+    }
 }
 // MARK: - Create
 extension EasyInsuranceVC {
@@ -172,17 +179,21 @@ extension EasyInsuranceVC {
                     self?.configureInsuranceType(with: response)
                 case .fetchInsuranceTypeDidfail(error: let error):
                     debugPrint(error.localizedDescription)
+                    //TO DO:- remove manual response
                     if let response = EasyInsuranceResponseModel.fromModuleFile() {
                         self?.insuranceTypeResponse = response
                         self?.configureInsuranceType(with: response)
                     }
                     
+                    
+                    self?.configureHideSection(for: .faq, dataSource: EasyInsuranceResponseModel.self)
                 case .fetchFAQsDidSucceed(response: let response):
                     self?.configureFAQsDetails(with: response)
                     self?.response = response
                     
                 case .fetchFAQsDidFail(error: let error):
                     debugPrint(error.localizedDescription)
+                    self?.configureHideSection(for: .faq, dataSource: FAQsDetailsResponse.self)
                     
                 }
             }.store(in: &cancellables)
