@@ -80,6 +80,10 @@ extension EasyInsuranceVC: UITableViewDelegate{
         
     }
     
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
     // MARK: - For Outer TableView Row Height
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if self.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) == 0 {
@@ -87,8 +91,10 @@ extension EasyInsuranceVC: UITableViewDelegate{
         }
         switch getSectionIdentifier(for: indexPath.section) {
         case EasyInsuranceSectionIdentifier.insuranceType:
-            if let insuranceTypeList = self.insuranceTypeResponse {
-                switch insuranceTypeList.insurance?.insuranceTypes?.count {
+            
+            if let dataSource = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<EasyInsuranceResponseModel>)) {
+                let insuranceTypeList = dataSource.models?[safe: indexPath.row] as? EasyInsuranceResponseModel
+                switch insuranceTypeList?.insurance?.insuranceTypes?.count {
                 case 0:
                     return 0
                 case 1,2:

@@ -28,8 +28,8 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-48-gmf">
-                        <rect key="frame" x="8" y="104" width="148" height="16"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDN-48-gmf">
+                        <rect key="frame" x="8" y="98" width="148" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -38,12 +38,12 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="pDN-48-gmf" secondAttribute="bottom" constant="8" id="CZF-pZ-2SX"/>
+                <constraint firstAttribute="bottom" secondItem="pDN-48-gmf" secondAttribute="bottom" constant="14" id="CZF-pZ-2SX"/>
                 <constraint firstAttribute="trailing" secondItem="7sC-CY-csC" secondAttribute="trailing" id="KnW-YD-jHX"/>
                 <constraint firstAttribute="trailing" secondItem="pDN-48-gmf" secondAttribute="trailing" constant="8" id="NgO-Lg-MRS"/>
                 <constraint firstItem="7sC-CY-csC" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Tfc-Np-9DQ"/>
                 <constraint firstItem="7sC-CY-csC" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="YKO-tP-yJz"/>
-                <constraint firstItem="pDN-48-gmf" firstAttribute="top" secondItem="7sC-CY-csC" secondAttribute="bottom" constant="8" id="hVv-bq-q3H"/>
+                <constraint firstItem="pDN-48-gmf" firstAttribute="top" secondItem="7sC-CY-csC" secondAttribute="bottom" constant="2" id="hVv-bq-q3H"/>
                 <constraint firstItem="pDN-48-gmf" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="uW8-Ud-wkh"/>
             </constraints>
             <connections>

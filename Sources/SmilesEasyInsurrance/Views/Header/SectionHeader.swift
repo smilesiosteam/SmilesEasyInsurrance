@@ -43,7 +43,7 @@ class SectionHeader: UIView {
         subTitleLabel.semanticContentAttribute = AppCommonMethods.languageIsArabic() ? .forceRightToLeft : .forceLeftToRight
         
         titleLabel.textColor = .black
-        subTitleLabel.textColor = .black.withAlphaComponent(0.8)
+        subTitleLabel.textColor = .black.withAlphaComponent(0.6)
         
     }
     

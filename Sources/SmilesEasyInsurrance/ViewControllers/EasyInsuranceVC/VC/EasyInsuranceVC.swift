@@ -72,8 +72,13 @@ public final class EasyInsuranceVC: UIViewController {
             imageView.widthAnchor.constraint(equalToConstant: 24)
         ])
         imageView.tintColor = .black
+        let imageLocal = UIImage(named: "iconsCategory", in: .module, compatibleWith: nil)
         imageView.sd_setImage(with: URL(string: self.insuranceTypeResponse?.insurance?.insuranceIconUrl ?? "")) { image, _, _, _ in
-            imageView.image = image?.withRenderingMode(.alwaysTemplate)
+            if (image != nil) {
+                imageView.image = image?.withRenderingMode(.alwaysTemplate)
+            }else{
+                imageView.image = imageLocal
+            }
         }
         let locationNavBarTitle = UILabel()
         locationNavBarTitle.text = self.insuranceTypeResponse?.insurance?.title ?? "INSURANCE".localizedString.capitalized
@@ -184,7 +189,6 @@ extension EasyInsuranceVC {
                         self?.insuranceTypeResponse = response
                         self?.configureInsuranceType(with: response)
                     }
-                    
                     
                     self?.configureHideSection(for: .faq, dataSource: EasyInsuranceResponseModel.self)
                 case .fetchFAQsDidSucceed(response: let response):
