@@ -11,7 +11,7 @@ import NetworkingLayer
 import SmilesBaseMainRequestManager
 
 protocol EasyInsuranceServiceHandlerProtocol {
-    func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkError>
+    func getInsuranceDetail(categoryId: Int) -> AnyPublisher<EasyInsuranceResponseModel, NetworkError>
 }
 
 final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
@@ -25,10 +25,9 @@ final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
     }
     
     // MARK: - Functions
-    func getInsuranceDetail() -> AnyPublisher<EasyInsuranceResponseModel, NetworkingLayer.NetworkError> {
-        let request = EasyInsuranceRequestModel()
+    func getInsuranceDetail(categoryId: Int) -> AnyPublisher<EasyInsuranceResponseModel, NetworkingLayer.NetworkError> {
+        let request = EasyInsuranceRequestModel(categoryId: categoryId)
         return repository.getInsuranceDetail(request: request)
-        
     }
     
 }

@@ -32,9 +32,9 @@ class InsuranceTypeCVC: UICollectionViewCell {
        
     }
     
-    func setupData(insurance: InsuranceType){
+    func setupData(insurance: Insurance){
         titleLbl.text = insurance.insuranceTypeTitle
-        image.setImageWithUrlString(insurance.insuranceTypeImageUrl ?? "")
+        image.setImageWithUrlString(insurance.insuranceTypeImageURL ?? "")
     }
 
 }

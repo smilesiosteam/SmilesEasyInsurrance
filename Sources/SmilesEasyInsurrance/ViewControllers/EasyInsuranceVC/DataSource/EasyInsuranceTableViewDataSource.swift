@@ -29,16 +29,16 @@ extension TableViewDataSource where Model == FaqsDetail {
 //MARK: - Make For Insurance Types
 
 extension TableViewDataSource where Model == EasyInsuranceResponseModel {
-    static func make(forInsurance insuranceType: EasyInsuranceResponseModel,
+    static func make(forInsurance insurance: EasyInsuranceResponseModel,
                      reuseIdentifier: String = "EasyInsuranceTVC", data: String, isDummy: Bool = false) -> TableViewDataSource {
         return TableViewDataSource(
-            models: [insuranceType].filter({$0.insurance?.insuranceTypes?.count ?? 0 > 0}),
+            models: [insurance],
             reuseIdentifier: reuseIdentifier,
             data: data,
             isDummy:isDummy
-        ) { (insuranceTypes, cell, data, indexPath) in
+        ) { (insurance, cell, data, indexPath) in
             guard let cell = cell as? EasyInsuranceTVC else {return}
-            cell.setupInsuranceData(insuranceTypes: insuranceTypes.insurance?.insuranceTypes)
+            cell.setupInsuranceData(insuranceTypes: insurance.insuranceTypes)
         }
     }
 }

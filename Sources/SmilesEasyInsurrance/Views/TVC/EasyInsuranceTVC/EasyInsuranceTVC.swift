@@ -16,7 +16,7 @@ class EasyInsuranceTVC: UITableViewCell {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: -  Properties
-    private var insuranceTypes: [InsuranceType]?
+    private var insuranceTypes: [Insurance]?
     
     //MARK: -  Methods
     override func awakeFromNib() {
@@ -34,7 +34,7 @@ class EasyInsuranceTVC: UITableViewCell {
         
     }
     
-    func setupInsuranceData(insuranceTypes: [InsuranceType]?) {
+    func setupInsuranceData(insuranceTypes: [Insurance]?) {
         
         self.insuranceTypes = insuranceTypes
         collectionView.reloadData()
@@ -93,7 +93,7 @@ extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let insurance = insuranceTypes?[safe: indexPath.row] {
-            EasyInsuranceRouter.shared.openURLInBrowser(urlString: insurance.redirectionUrl)
+            EasyInsuranceRouter.shared.openURLInBrowser(urlString: insurance.redirectionURL)
         }
     }
     

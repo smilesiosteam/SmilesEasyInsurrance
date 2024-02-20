@@ -13,97 +13,61 @@ import NetworkingLayer
 
 final class EasyInsuranceViewModel {
     
-    // MARK: - Input
-    public enum Input {
-        case fetchInsuranceType(categoryId: Int)
-        case getFAQsDetails(faqId: Int)
-    }
-    
-    // MARK: - Output
-    public enum Output {
-        ///Insurance type Output
-        case fetchInsuranceTypeDidSucceed(response: EasyInsuranceResponseModel)
-        case fetchInsuranceTypeDidfail(error: Error)
-        ///FAQs type Output
-        case fetchFAQsDidSucceed(response: FAQsDetailsResponse)
-        case fetchFAQsDidFail(error: Error)
-        
-    }
-    
     // MARK: - Properties
-    var output: PassthroughSubject<Output, Never> = .init()
-    var cancellables = Set<AnyCancellable>()
-    private let faqsViewModel = FAQsViewModel()
-    private var faqsUseCaseInput: PassthroughSubject<FAQsViewModel.Input, Never> = .init()
+    private let insuranceUseCase: EasyInsuranceCaseProtocol
+    private var statusSubject = PassthroughSubject<State, Never>()
+    var offersListingPublisher: AnyPublisher<State, Never> {
+        statusSubject.eraseToAnyPublisher()
+    }
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
-    init() {
-    }
-}
-
-//MARK: - EasyInsuranceViewModel Transformation
-extension EasyInsuranceViewModel {
-    
-    func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
-        output = PassthroughSubject<Output, Never>()
-        input.sink { [weak self] event in
-            switch event {
-            case .fetchInsuranceType(let categoryId): 
-                self?.getInsuranceTypes(categoryId: categoryId)
-            case .getFAQsDetails(faqId: let faqId):
-                self?.bind(to: self?.faqsViewModel ?? FAQsViewModel())
-                self?.faqsUseCaseInput.send(.getFAQsDetails(faqId: faqId, baseUrl: AppCommonMethods.serviceBaseUrl))
-                break
-            }
-            
-        }.store(in: &cancellables)
-        return output.eraseToAnyPublisher()
+    init(insuranceUsecase: EasyInsuranceCaseProtocol) {
+        self.insuranceUseCase = insuranceUsecase
     }
     
 }
 
-//MARK: - DATA BINDING FOR FAQS
+//MARK: - SERVICES -
 extension EasyInsuranceViewModel {
-    func bind(to faqsViewModel: FAQsViewModel) {
-        faqsUseCaseInput = PassthroughSubject<FAQsViewModel.Input, Never>()
-        let output = faqsViewModel.transform(input: faqsUseCaseInput.eraseToAnyPublisher())
-        output
-            .sink { [weak self] event in
-                switch event {
-                case .fetchFAQsDidSucceed(let response):
-                    self?.output.send(.fetchFAQsDidSucceed(response: response))
-                case .fetchFAQsDidFail(let error):
-                    self?.output.send(.fetchFAQsDidFail(error: error))
+    
+    func getInsuranceData(categoryId: Int) {
+        insuranceUseCase.getInsuranceData(categoryId: categoryId)
+            .sink { [weak self] state in
+                switch state {
+                case .fetchInsuranceTypeDidSucceed(let response):
+                    self?.statusSubject.send(.fetchInsuranceTypeDidSucceed(response: response))
+                case .fetchInsuranceTypeDidfail(let error):
+                    self?.statusSubject.send(.fetchInsuranceTypeDidfail(error: error))
+                default: break
                 }
             }.store(in: &cancellables)
     }
     
-    private func getInsuranceTypes(categoryId: Int) {
-        let getEasyInsuranceRequest = EasyInsuranceRequestModel(
-            categoryId: categoryId
-        )
-        
-        var network: Requestable {
-            NetworkingLayerRequestable(requestTimeOut: 60)
-        }
-        
-        let service = EasyInsuranceRepository(
-            networkRequest: network)
-        
-        service.getInsuranceDetail(request: getEasyInsuranceRequest)
-            .sink { [weak self] completion in
-                debugPrint(completion)
-                switch completion {
-                case .failure(let error):
-                    self?.output.send(.fetchInsuranceTypeDidfail(error: error))
-                case .finished:
-                    debugPrint("nothing much to do here")
+    func getFAQsDetails(faqId: Int) {
+        insuranceUseCase.getFAQs(faqsId: faqId)
+            .sink { [weak self] state in
+                switch state {
+                case .fetchFAQsDidSucceed(let response):
+                    self?.statusSubject.send(.fetchFAQsDidSucceed(response: response))
+                case .fetchFAQsDidFail(let error):
+                    self?.statusSubject.send(.fetchFAQsDidFail(error: error))
+                default: break
                 }
-            } receiveValue: { [weak self] response in
-                debugPrint("got my response here \(response)")
-                self?.output.send(.fetchInsuranceTypeDidSucceed(response: response))
-                
-            }
-            .store(in: &cancellables)
+            }.store(in: &cancellables)
+    }
+    
+}
+
+// MARK: - STATE -
+extension EasyInsuranceViewModel {
+    enum State {
+        ///Insurance type Output
+        case fetchInsuranceTypeDidSucceed(response: EasyInsuranceResponseModel)
+        case fetchInsuranceTypeDidfail(error: String)
+        ///FAQs type Output
+        case fetchFAQsDidSucceed(response: FAQsDetailsResponse)
+        case fetchFAQsDidFail(error: String)
     }
 }
+

@@ -35,8 +35,11 @@ extension EasyInsuranceVC: UITableViewDelegate{
         switch sections[section].identifier {
         case EasyInsuranceSectionIdentifier.insuranceType:
             let header = SectionHeader()
-            header.titleLabel.text = self.insuranceTypeResponse?.insurance?.subTitle ?? ""
-            header.subTitleLabel.text = self.insuranceTypeResponse?.insurance?.description ?? ""
+            if let dataSource = dataSource?.dataSources?[safe: section] as? TableViewDataSource<EasyInsuranceResponseModel>,
+               let insuranceTypeResponse = dataSource.models?.first {
+//                header.titleLabel.text = insuranceTypeResponse.insurance?.subTitle ?? ""
+//                header.subTitleLabel.text = self.insuranceTypeResponse.insurance?.description ?? ""
+            }
             configureHeaderForShimmer(section: section, headerView: header)
             return header
         case EasyInsuranceSectionIdentifier.faqs:
@@ -83,7 +86,7 @@ extension EasyInsuranceVC: UITableViewDelegate{
             
             if let dataSource = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<EasyInsuranceResponseModel>)) {
                 let insuranceTypeList = dataSource.models?[safe: indexPath.row] as? EasyInsuranceResponseModel
-                switch insuranceTypeList?.insurance?.insuranceTypes?.count {
+                switch insuranceTypeList?.insuranceTypes?.count {
                 case 0:
                     return 0
                 case 1,2:

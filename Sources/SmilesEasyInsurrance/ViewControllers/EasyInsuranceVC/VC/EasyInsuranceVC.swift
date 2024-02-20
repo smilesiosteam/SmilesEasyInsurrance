@@ -17,19 +17,11 @@ final class EasyInsuranceVC: UIViewController {
     @IBOutlet weak var easyInsuranceTableView: UITableView!
     
     // MARK: - Properties
-    var input: PassthroughSubject<EasyInsuranceViewModel.Input, Never> = .init()
-    private var cancellables = Set<AnyCancellable>()
-    var insuranceTypeResponse: EasyInsuranceResponseModel?
-    
-    var dataSource: SectionedTableViewDataSource?
-    var sections = [TableSectionData<EasyInsuranceSectionIdentifier>]()
-    var insuranceTypesSectionsData: GetSectionsResponseModel?
-    var response: FAQsDetailsResponse?
-    var mutatingSectionDetails = [SectionDetailDO]()
-    var navigationdelegate: EasyInsuranceNavigationProtocol?
-    
     private var dependance: EasyInsuranceDependance
     private var viewModel: EasyInsuranceViewModel
+    private var cancellables = Set<AnyCancellable>()
+    var dataSource: SectionedTableViewDataSource?
+    var sections = [TableSectionData<EasyInsuranceSectionIdentifier>]()
     
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
@@ -51,10 +43,10 @@ final class EasyInsuranceVC: UIViewController {
     //MARK: - METHODS -
     private func setupViews() {
         
-        setUpNavigationBar()
-        bind(to: viewModel)
         setupTableView()
+        bindViewModel()
         configureSectionsData()
+        setUpNavigationBar()
         
     }
     
@@ -87,16 +79,9 @@ final class EasyInsuranceVC: UIViewController {
             imageView.widthAnchor.constraint(equalToConstant: 24)
         ])
         imageView.tintColor = .black
-        let imageLocal = UIImage(named: "iconsCategory", in: .module, compatibleWith: nil)
-        imageView.sd_setImage(with: URL(string: self.insuranceTypeResponse?.insurance?.insuranceIconUrl ?? "")) { image, _, _, _ in
-            if (image != nil) {
-                imageView.image = image?.withRenderingMode(.alwaysTemplate)
-            }else{
-                imageView.image = imageLocal
-            }
-        }
+        imageView.image = UIImage(named: "iconsCategory", in: .module, compatibleWith: nil)
         let locationNavBarTitle = UILabel()
-        locationNavBarTitle.text = self.insuranceTypeResponse?.insurance?.title ?? "INSURANCE".localizedString.capitalized
+        locationNavBarTitle.text = "Easy_Insurance_navTitle".localizedString
         locationNavBarTitle.textColor = .black
         locationNavBarTitle.fontTextStyle = .smilesHeadline4
         let hStack = UIStackView(arrangedSubviews: [imageView, locationNavBarTitle])
@@ -138,8 +123,8 @@ final class EasyInsuranceVC: UIViewController {
             dataSource?.dataSources?[faqsIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: true)
         }
         configureDataSource()
-        self.input.send(.fetchInsuranceType(categoryId: dependance.categoryId))
-        self.input.send(.getFAQsDetails(faqId: Constants.faqsID))
+        viewModel.getInsuranceData(categoryId: dependance.categoryId)
+        viewModel.getFAQsDetails(faqId: Constants.faqsID)
         
     }
     
@@ -161,34 +146,21 @@ final class EasyInsuranceVC: UIViewController {
 // MARK: - DATA BINDING EXTENSION
 extension EasyInsuranceVC {
     
-    func bind(to viewModel: EasyInsuranceViewModel) {
-        self.input = PassthroughSubject<EasyInsuranceViewModel.Input, Never>()
-        let output = viewModel.transform(input: input.eraseToAnyPublisher())
-        output
-            .sink { [weak self] event in
-                switch event {
-                case .fetchInsuranceTypeDidSucceed(response: let response):
-                    self?.insuranceTypeResponse = response
-                    self?.configureInsuranceType(with: response)
-                case .fetchInsuranceTypeDidfail(error: let error):
-                    debugPrint(error.localizedDescription)
-                    //TO DO:- remove manual response
-                    if let response = EasyInsuranceResponseModel.fromModuleFile() {
-                        self?.insuranceTypeResponse = response
-                        self?.configureInsuranceType(with: response)
-                    }
-                    
-                    self?.configureHideSection(for: .faqs, dataSource: EasyInsuranceResponseModel.self)
-                case .fetchFAQsDidSucceed(response: let response):
-                    self?.configureFAQsDetails(with: response)
-                    self?.response = response
-                    
-                case .fetchFAQsDidFail(error: let error):
-                    debugPrint(error.localizedDescription)
-                    self?.configureHideSection(for: .faqs, dataSource: FAQsDetailsResponse.self)
-                    
-                }
-            }.store(in: &cancellables)
+    func bindViewModel() {
+        viewModel.offersListingPublisher.sink { [weak self] state in
+            switch state {
+            case .fetchInsuranceTypeDidSucceed(let response):
+                self?.configureInsuranceType(with: response)
+            case .fetchInsuranceTypeDidfail(let error):
+                debugPrint(error)
+                self?.configureHideSection(for: .faqs, dataSource: EasyInsuranceResponseModel.self)
+            case .fetchFAQsDidSucceed(let response):
+                self?.configureFAQsDetails(with: response)
+            case .fetchFAQsDidFail(let error):
+                debugPrint(error.localizedDescription)
+                self?.configureHideSection(for: .faqs, dataSource: FAQsDetailsResponse.self)
+            }
+        }.store(in: &cancellables)
     }
     
 }
@@ -217,7 +189,6 @@ extension EasyInsuranceVC {
         if let index = getSectionIndex(for: section) {
             (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.models = []
             (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.isDummy = false
-            self.mutatingSectionDetails.removeAll(where: { $0.sectionIdentifier == section.rawValue })
             self.configureDataSource()
         }
     }
