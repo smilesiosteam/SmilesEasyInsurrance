@@ -7,7 +7,6 @@
 
 import Foundation
 
-public protocol EasyInsuranceNavigationProtocol {
+public protocol EasyInsuranceNavigationProtocol: AnyObject {
     func navigateToInsuranceDetailsWebview(url: String)
-    func navigateToFAQs()
 }

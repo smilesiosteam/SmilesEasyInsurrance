@@ -11,18 +11,14 @@ import SmilesFontsManager
 import SmilesUtilities
 import SmilesSharedServices
 
-public final class EasyInsuranceVC: UIViewController {
+final class EasyInsuranceVC: UIViewController {
     
     //MARK: OUtlets
     @IBOutlet weak var easyInsuranceTableView: UITableView!
     
-    
     // MARK: - Properties
     var input: PassthroughSubject<EasyInsuranceViewModel.Input, Never> = .init()
     private var cancellables = Set<AnyCancellable>()
-    lazy var viewModel: EasyInsuranceViewModel = {
-        return EasyInsuranceViewModel()
-    }()
     var insuranceTypeResponse: EasyInsuranceResponseModel?
     
     var dataSource: SectionedTableViewDataSource?
@@ -32,18 +28,37 @@ public final class EasyInsuranceVC: UIViewController {
     var mutatingSectionDetails = [SectionDetailDO]()
     var navigationdelegate: EasyInsuranceNavigationProtocol?
     
+    private var dependance: EasyInsuranceDependance
+    private var viewModel: EasyInsuranceViewModel
+    
     //MARK: ViewLifeCycle
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
-        bind(to: viewModel)
-        configureSectionsData()
+        setupViews()
     }
     
+    // MARK: - INITIALISER -
+    init(dependance: EasyInsuranceDependance, viewModel: EasyInsuranceViewModel) {
+        self.dependance = dependance
+        self.viewModel = viewModel
+        super.init(nibName: "EasyInsuranceVC", bundle: .module)
+    }
     
-    //MARK: - customUI
-    fileprivate func setupTableView() {
-        self.setUpNavigationBar()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - METHODS -
+    private func setupViews() {
+        
+        setUpNavigationBar()
+        bind(to: viewModel)
+        setupTableView()
+        configureSectionsData()
+        
+    }
+    
+    private func setupTableView() {
         self.easyInsuranceTableView.sectionFooterHeight = .leastNormalMagnitude
         if #available(iOS 15.0, *) {
             self.easyInsuranceTableView.sectionHeaderTopPadding = CGFloat(0)
@@ -114,17 +129,17 @@ public final class EasyInsuranceVC: UIViewController {
         self.dataSource = SectionedTableViewDataSource(dataSources: Array(repeating: [], count: 2))
         self.sections.removeAll()
         self.sections.append(TableSectionData(index: 0, identifier: .insuranceType))
-        self.sections.append(TableSectionData(index: 1, identifier: .faq))
+        self.sections.append(TableSectionData(index: 1, identifier: .faqs))
         
         if let insuranceIndex = getSectionIndex(for: .insuranceType), let response = EasyInsuranceResponseModel.fromModuleFile() {
-            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true, completion: nil)
+            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true)
         }
-        if let faqsIndex = getSectionIndex(for: .faq), let response = FAQsDetailsResponse.fromModuleFile() {
-            dataSource?.dataSources?[faqsIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: true, completion: nil)
+        if let faqsIndex = getSectionIndex(for: .faqs), let response = FAQsDetailsResponse.fromModuleFile() {
+            dataSource?.dataSources?[faqsIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: true)
         }
         configureDataSource()
-        self.input.send(.fetchInsuranceType(categoryId: 14))
-        self.input.send(.getFAQsDetails(faqId: 10))
+        self.input.send(.fetchInsuranceType(categoryId: dependance.categoryId))
+        self.input.send(.getFAQsDetails(faqId: Constants.faqsID))
         
     }
     
@@ -135,41 +150,14 @@ public final class EasyInsuranceVC: UIViewController {
         }
     }
     
-    
     func getSectionIndex(for identifier: EasyInsuranceSectionIdentifier) -> Int? {
         return sections.first(where: { obj in
             return obj.identifier == identifier
         })?.index
     }
     
-    
-    func getSectionIdentifier(for index: Int) -> EasyInsuranceSectionIdentifier {
-        if let section = sections.first(where: { $0.index == index }) {
-            return section.identifier
-        } else {
-            return .insuranceType
-        }
-    }
-    
-    // MARK: - configureHideSection
-    fileprivate func configureHideSection<T>(for section: EasyInsuranceSectionIdentifier, dataSource: T.Type) {
-        if let index = getSectionIndex(for: section) {
-            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.models = []
-            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.isDummy = false
-            self.mutatingSectionDetails.removeAll(where: { $0.sectionIdentifier == section.rawValue })
-            self.configureDataSource()
-        }
-    }
 }
-// MARK: - Create
-extension EasyInsuranceVC {
-    static public func create() -> EasyInsuranceVC {
-        let viewController = EasyInsuranceVC(nibName: String(describing: EasyInsuranceVC.self), bundle: .module)
-        return viewController
-    }
-    
-    
-}
+
 // MARK: - DATA BINDING EXTENSION
 extension EasyInsuranceVC {
     
@@ -190,14 +178,14 @@ extension EasyInsuranceVC {
                         self?.configureInsuranceType(with: response)
                     }
                     
-                    self?.configureHideSection(for: .faq, dataSource: EasyInsuranceResponseModel.self)
+                    self?.configureHideSection(for: .faqs, dataSource: EasyInsuranceResponseModel.self)
                 case .fetchFAQsDidSucceed(response: let response):
                     self?.configureFAQsDetails(with: response)
                     self?.response = response
                     
                 case .fetchFAQsDidFail(error: let error):
                     debugPrint(error.localizedDescription)
-                    self?.configureHideSection(for: .faq, dataSource: FAQsDetailsResponse.self)
+                    self?.configureHideSection(for: .faqs, dataSource: FAQsDetailsResponse.self)
                     
                 }
             }.store(in: &cancellables)
@@ -207,10 +195,11 @@ extension EasyInsuranceVC {
 
 // MARK: - DataSource Configuration
 extension EasyInsuranceVC {
+    
     // MARK: - configure FAQsDetails
     private func configureFAQsDetails(with response: FAQsDetailsResponse) {
-        if let faqIndex = getSectionIndex(for: .faq) {
-            dataSource?.dataSources?[faqIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: false,completion: nil)
+        if let faqIndex = getSectionIndex(for: .faqs) {
+            dataSource?.dataSources?[faqIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: false)
             self.configureDataSource()
         }
     }
@@ -218,10 +207,19 @@ extension EasyInsuranceVC {
     // MARK: - configure InsuranceType
     private func configureInsuranceType(with response: EasyInsuranceResponseModel) {
         if let insuranceIndex = getSectionIndex(for: .insuranceType) {
-            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: false,completion: { insuranceType in
-                print(insuranceType)
-            })
+            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: false)
             configureDataSource()
         }
     }
+    
+    // MARK: - configureHideSection
+    fileprivate func configureHideSection<T>(for section: EasyInsuranceSectionIdentifier, dataSource: T.Type) {
+        if let index = getSectionIndex(for: section) {
+            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.models = []
+            (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.isDummy = false
+            self.mutatingSectionDetails.removeAll(where: { $0.sectionIdentifier == section.rawValue })
+            self.configureDataSource()
+        }
+    }
+    
 }

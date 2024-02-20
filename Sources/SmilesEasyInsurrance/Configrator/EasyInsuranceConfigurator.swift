@@ -31,16 +31,26 @@ public struct EasyInsuranceFAQsDependance {
 }
 
 
-public enum EasyInsuranceConfigurator {
+struct EasyInsuranceConfigurator {
     
-    public static func getEasyInsuranceDetails(dependance: EasyInsuranceDependance,
-                                            navigationDelegate: EasyInsuranceNavigationProtocol) -> EasyInsuranceVC {
+    enum ConfiguratorType {
+        case easyInsuranceVC(dependance: EasyInsuranceDependance)
+    }
+    
+    static func create(type: ConfiguratorType) -> UIViewController {
+        switch type {
+        case .easyInsuranceVC(let dependance):
+            getEasyInsuranceDetails(dependance: dependance)
+        }
+    }
+    
+    private static func getEasyInsuranceDetails(dependance: EasyInsuranceDependance) -> EasyInsuranceVC {
         
         let viewModel = EasyInsuranceViewModel()
-        let viewController = EasyInsuranceVC.create()
-        viewController.viewModel = viewModel
-        viewController.navigationdelegate = navigationDelegate
+        let viewController = EasyInsuranceVC(dependance: dependance, viewModel: viewModel)
+        viewController.hidesBottomBarWhenPushed = true
         return viewController
+        
     }
     
     
@@ -48,11 +58,11 @@ public enum EasyInsuranceConfigurator {
         return .init(repository: repository)
     }
     
-    static var network: Requestable {
+    private static var network: Requestable {
         NetworkingLayerRequestable(requestTimeOut: 60)
     }
     
-    static var repository: EasyInsuranceServiceable {
+    private static var repository: EasyInsuranceServiceable {
         EasyInsuranceRepository(networkRequest: network)
     }
     

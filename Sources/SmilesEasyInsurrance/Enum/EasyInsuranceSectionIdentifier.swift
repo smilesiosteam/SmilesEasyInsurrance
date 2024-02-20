@@ -8,10 +8,10 @@
 import Foundation
 import SmilesUtilities
 
-enum EasyInsuranceSectionIdentifier: String,SectionIdentifierProtocol {
+enum EasyInsuranceSectionIdentifier: String, SectionIdentifierProtocol {
     
     var identifier: String { return self.rawValue}
-    case insuranceType = "insuranceType"
-    case faq = "faqs"
+    case insuranceType = "INSURANCE_TYPE"
+    case faqs = "FAQS"
     
 }

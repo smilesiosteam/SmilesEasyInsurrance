@@ -16,19 +16,16 @@ class EasyInsuranceTVC: UITableViewCell {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: -  Properties
-    var callBack: ((InsuranceType) -> ())?
-    
-    
-    var updateCellData: [InsuranceType]?{
-        didSet{
-            self.collectionView?.reloadData()
-        }
-    }
+    private var insuranceTypes: [InsuranceType]?
     
     //MARK: -  Methods
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        setupViews()
+    }
+    
+    private func setupViews() {
         
         collectionView.register(UINib(nibName: String(describing: InsuranceTypeCVC.self), bundle: .module), forCellWithReuseIdentifier: String(describing: InsuranceTypeCVC.self))
         collectionView.dataSource = self
@@ -37,20 +34,21 @@ class EasyInsuranceTVC: UITableViewCell {
         
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    func setupInsuranceData(insuranceTypes: [InsuranceType]?) {
         
-        // Configure the view for the selected state
+        self.insuranceTypes = insuranceTypes
+        collectionView.reloadData()
+        
     }
     
     //MARK: -  Compositional Layout
-    func setupCollectionViewLayout() -> UICollectionViewCompositionalLayout {
+    private func setupCollectionViewLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection? in
             
             let smallItemSize = NSCollectionLayoutSize(widthDimension: .absolute((self.collectionView.frame.width-16)/2), heightDimension: .fractionalHeight(0.5))
             var smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
             
-            if let insuranceData = self.updateCellData, insuranceData.count <= 2 {
+            if let insuranceData = self.insuranceTypes, insuranceData.count <= 2 {
                 smallItem = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .absolute((self.collectionView.frame.width-16)/2), heightDimension: .fractionalHeight(1)))
             }
             smallItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
@@ -75,8 +73,9 @@ class EasyInsuranceTVC: UITableViewCell {
 }
 
 extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return updateCellData?.count ?? 0
+        return insuranceTypes?.count ?? 0
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -84,18 +83,18 @@ extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let data = updateCellData?[safe: indexPath.row] {
+        if let insurance = insuranceTypes?[safe: indexPath.row] {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InsuranceTypeCVC", for: indexPath) as? InsuranceTypeCVC else {return UICollectionViewCell()}
-            
-            cell.model = data
+            cell.setupData(insurance: insurance)
             return cell
         }
         return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let data = updateCellData?[indexPath.row] {
-            callBack?(data)
+        if let insurance = insuranceTypes?[safe: indexPath.row] {
+            EasyInsuranceRouter.shared.openURLInBrowser(urlString: insurance.redirectionUrl)
         }
     }
+    
 }

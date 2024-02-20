@@ -15,15 +15,13 @@ extension EasyInsuranceVC: UITableViewDelegate{
     
     //MARK: - DidSelect Method
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch getSectionIdentifier(for: indexPath.section) {
+        switch sections[indexPath.section].identifier {
         case EasyInsuranceSectionIdentifier.insuranceType:
            break
-        case EasyInsuranceSectionIdentifier.faq:
-             if let faqIndex = getSectionIndex(for: .faq), faqIndex == indexPath.section {
-                let faqDetail = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<FaqsDetail>)?.models?[safe: indexPath.row] as? FaqsDetail)
-                faqDetail?.isHidden = !(faqDetail?.isHidden ?? true)
-                tableView.reloadRows(at: [indexPath], with: .automatic)
-            }
+        case EasyInsuranceSectionIdentifier.faqs:
+            let faqDetail = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<FaqsDetail>)?.models?[safe: indexPath.row] as? FaqsDetail)
+            faqDetail?.isHidden = !(faqDetail?.isHidden ?? true)
+            tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
     
@@ -34,14 +32,14 @@ extension EasyInsuranceVC: UITableViewDelegate{
         if self.dataSource?.tableView(tableView, numberOfRowsInSection: section) == 0 {
             return nil
         }
-        switch getSectionIdentifier(for: section) {
+        switch sections[section].identifier {
         case EasyInsuranceSectionIdentifier.insuranceType:
             let header = SectionHeader()
             header.titleLabel.text = self.insuranceTypeResponse?.insurance?.subTitle ?? ""
             header.subTitleLabel.text = self.insuranceTypeResponse?.insurance?.description ?? ""
             configureHeaderForShimmer(section: section, headerView: header)
             return header
-        case EasyInsuranceSectionIdentifier.faq:
+        case EasyInsuranceSectionIdentifier.faqs:
             let header = SectionHeader()
             header.titleLabel.text = "FAQs"
             header.subTitleLabel.text = ""
@@ -53,30 +51,21 @@ extension EasyInsuranceVC: UITableViewDelegate{
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        
         if self.dataSource?.tableView(tableView, numberOfRowsInSection: section) == 0 {
             return 0
         }
-        switch getSectionIdentifier(for: section) {
-        case EasyInsuranceSectionIdentifier.insuranceType:
-            return CGFloat.leastNormalMagnitude
-        case EasyInsuranceSectionIdentifier.faq:
-            return CGFloat.leastNormalMagnitude
-        }
-        
+        return CGFloat.leastNormalMagnitude
         
     }
     
     // MARK: - For Outer TableView HeaderView Heights
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
         if self.dataSource?.tableView(tableView, numberOfRowsInSection: section) == 0 {
             return 0
         }
-        switch getSectionIdentifier(for: section) {
-        case EasyInsuranceSectionIdentifier.insuranceType:
-            return UITableView.automaticDimension
-        case EasyInsuranceSectionIdentifier.faq:
-            return UITableView.automaticDimension
-        }
+        return UITableView.automaticDimension
         
     }
     
@@ -89,7 +78,7 @@ extension EasyInsuranceVC: UITableViewDelegate{
         if self.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) == 0 {
             return 0
         }
-        switch getSectionIdentifier(for: indexPath.section) {
+        switch sections[indexPath.section].identifier {
         case EasyInsuranceSectionIdentifier.insuranceType:
             
             if let dataSource = ((self.dataSource?.dataSources?[safe: indexPath.section] as? TableViewDataSource<EasyInsuranceResponseModel>)) {
@@ -103,7 +92,7 @@ extension EasyInsuranceVC: UITableViewDelegate{
                     return 280.0
                 }
             }
-        case EasyInsuranceSectionIdentifier.faq:
+        case EasyInsuranceSectionIdentifier.faqs:
             return UITableView.automaticDimension
         }
         return 0
@@ -129,7 +118,7 @@ extension EasyInsuranceVC {
             }
         }
         
-        if let index = getSectionIndex(for: .faq) {
+        if let index = getSectionIndex(for: .faqs) {
             if let dataSource = self.dataSource?.dataSources?[safe: index] as? TableViewDataSource<FaqsDetail> {
                 showHide(isDummy: dataSource.isDummy)
             }

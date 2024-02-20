@@ -26,24 +26,15 @@ class InsuranceTypeCVC: UICollectionViewCell {
         }
     }
     
-    
-    
-    //MARK: - Properties
-    var model: InsuranceType! {
-        didSet{
-            setupCVC(model: model)
-        }
-    }
-    
     //MARK: - Cell Methods
     override func awakeFromNib() {
         super.awakeFromNib()
        
     }
     
-    func setupCVC(model:InsuranceType){
-        titleLbl.text = model.insuranceTypeTitle
-//        image.setImageWithUrlString(model.insuranceTypeImageUrl ?? "" , defaultImage: "In_1")
+    func setupData(insurance: InsuranceType){
+        titleLbl.text = insurance.insuranceTypeTitle
+        image.setImageWithUrlString(insurance.insuranceTypeImageUrl ?? "")
     }
 
 }

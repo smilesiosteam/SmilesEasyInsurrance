@@ -14,9 +14,7 @@ struct EasyInsuranceCellRegistration: CellRegisterable {
     
     func register(for tableView: UITableView) {
         tableView.registerCellFromNib(EasyInsuranceTVC.self, bundle: .module)
-        tableView.registerCellFromNib(FooterTVC.self, bundle: .module)
         tableView.registerCellFromNib(FAQTableViewCell.self,bundle: FAQTableViewCell.module)
-        
     }
     
 }
