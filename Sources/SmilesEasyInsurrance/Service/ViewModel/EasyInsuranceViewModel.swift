@@ -15,6 +15,8 @@ final class EasyInsuranceViewModel {
     
     // MARK: - Properties
     private let insuranceUseCase: EasyInsuranceCaseProtocol
+    private let sectionsUseCase: SectionsUseCaseProtocol
+    private let faqsUseCase: FAQsUseCaseProtocol
     private var statusSubject = PassthroughSubject<State, Never>()
     var offersListingPublisher: AnyPublisher<State, Never> {
         statusSubject.eraseToAnyPublisher()
@@ -22,8 +24,10 @@ final class EasyInsuranceViewModel {
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
-    init(insuranceUsecase: EasyInsuranceCaseProtocol) {
+    init(insuranceUsecase: EasyInsuranceCaseProtocol, sectionsUseCase: SectionsUseCaseProtocol, faqsUseCase: FAQsUseCaseProtocol) {
         self.insuranceUseCase = insuranceUsecase
+        self.sectionsUseCase = sectionsUseCase
+        self.faqsUseCase = faqsUseCase
     }
     
 }
@@ -39,22 +43,35 @@ extension EasyInsuranceViewModel {
                     self?.statusSubject.send(.fetchInsuranceTypeDidSucceed(response: response))
                 case .fetchInsuranceTypeDidfail(let error):
                     self?.statusSubject.send(.fetchInsuranceTypeDidfail(error: error))
-                default: break
                 }
             }.store(in: &cancellables)
     }
     
     func getFAQsDetails(faqId: Int) {
-        insuranceUseCase.getFAQs(faqsId: faqId)
+        faqsUseCase.getFAQsDetails(faqId: faqId, baseUrl: AppCommonMethods.serviceBaseUrl)
             .sink { [weak self] state in
                 switch state {
-                case .fetchFAQsDidSucceed(let response):
+                case .fetchFAQsDidSucceed(response: let response):
                     self?.statusSubject.send(.fetchFAQsDidSucceed(response: response))
-                case .fetchFAQsDidFail(let error):
-                    self?.statusSubject.send(.fetchFAQsDidFail(error: error))
-                default: break
+                case .fetchFAQsDidFail(error: let error):
+                    self?.statusSubject.send(.fetchFAQsDidFail(error: error.localizedDescription))
                 }
-            }.store(in: &cancellables)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func getSections(categoryId: Int) {
+        self.sectionsUseCase.getSections(categoryID: categoryId)
+            .sink { [weak self] state in
+                switch state {
+                case .sectionsDidSucceed(response: let response):
+                    self?.statusSubject.send(.fetchSectionsDidSucceed(response: response))
+                case .sectionsDidFail(error: let error):
+                    self?.statusSubject.send(.fetchSectionsDidFail(error: error))
+                }
+            }
+            .store(in: &cancellables)
+        
     }
     
 }
@@ -65,6 +82,9 @@ extension EasyInsuranceViewModel {
         ///Insurance type Output
         case fetchInsuranceTypeDidSucceed(response: EasyInsuranceResponseModel)
         case fetchInsuranceTypeDidfail(error: String)
+        ///Insurance type Output
+        case fetchSectionsDidSucceed(response: GetSectionsResponseModel)
+        case fetchSectionsDidFail(error: String)
         ///FAQs type Output
         case fetchFAQsDidSucceed(response: FAQsDetailsResponse)
         case fetchFAQsDidFail(error: String)

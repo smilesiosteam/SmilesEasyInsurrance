@@ -16,7 +16,7 @@ class SectionHeader: UIView {
     @IBOutlet weak var titleLabel: UILocalizableLabel!
     @IBOutlet weak var subTitleLabel: UILocalizableLabel!
     @IBOutlet weak var mainView: UIView!
-    @IBOutlet weak var bgMainView: UIView!
+    @IBOutlet weak var headerContentBottomSpace: NSLayoutConstraint!
     
     // MARK: - METHODS -
     override init(frame: CGRect) {
@@ -49,9 +49,10 @@ class SectionHeader: UIView {
     
     
     // MARK: - METHODS DataSetup -
-    func setupData(title: String?, subTitle: String?, color: UIColor?,section:Int?, isPostSub:Bool = false) {
+    func setupData(title: String?, subTitle: String?, removeBottomSpace: Bool = false) {
         titleLabel.localizedString = title ?? ""
         subTitleLabel.localizedString = subTitle ?? ""
+        headerContentBottomSpace.constant = removeBottomSpace ? 0 : 24
     }
     
 }

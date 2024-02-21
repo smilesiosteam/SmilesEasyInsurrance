@@ -47,7 +47,9 @@ struct EasyInsuranceConfigurator {
     private static func getEasyInsuranceDetails(dependance: EasyInsuranceDependance) -> EasyInsuranceVC {
         
         let insuranceUsecase = EasyInsuranceUseCase(services: service)
-        let viewModel = EasyInsuranceViewModel(insuranceUsecase: insuranceUsecase)
+        let sectionsUsecase = SectionsUseCase()
+        let faqsUsecase = FAQsUseCase()
+        let viewModel = EasyInsuranceViewModel(insuranceUsecase: insuranceUsecase, sectionsUseCase: sectionsUsecase, faqsUseCase: faqsUsecase)
         let viewController = EasyInsuranceVC(dependance: dependance, viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true
         return viewController

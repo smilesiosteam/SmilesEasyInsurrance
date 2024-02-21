@@ -10,10 +10,16 @@ import NetworkingLayer
 
 class EasyInsuranceResponseModel: BaseMainResponse {
     
-    let insuranceTypes: [Insurance]? = nil
+    var insuranceTypes: [Insurance]?
 
     enum CodingKeys: String, CodingKey {
         case insuranceTypes
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        insuranceTypes = try values.decodeIfPresent([Insurance].self, forKey: .insuranceTypes)
+        try super.init(from: decoder)
     }
     
 }

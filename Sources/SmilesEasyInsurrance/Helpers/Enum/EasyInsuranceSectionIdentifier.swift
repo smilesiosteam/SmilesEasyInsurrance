@@ -11,7 +11,8 @@ import SmilesUtilities
 enum EasyInsuranceSectionIdentifier: String, SectionIdentifierProtocol {
     
     var identifier: String { return self.rawValue}
-    case insuranceType = "INSURANCE_TYPE"
+    case topPlaceholder = "TOP_PLACEHOLDER"
+    case insuranceCategories = "INUSRANCE_CATEGORIES"
     case faqs = "FAQS"
     
 }
