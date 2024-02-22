@@ -23,6 +23,9 @@ final class EasyInsuranceVC: UIViewController {
     var dataSource: SectionedTableViewDataSource?
     var sections = [TableSectionData<EasyInsuranceSectionIdentifier>]()
     var insuranceSections: GetSectionsResponseModel?
+    var consentActionType: ConsentActionType?
+    var redirectionURL: String?
+    
     
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
@@ -52,7 +55,12 @@ final class EasyInsuranceVC: UIViewController {
     }
     
     private func setupTableView() {
-        easyInsuranceTableView.tableHeaderView = .init(frame: .init(x: 0, y: 0, width: 0, height: CGFloat.leastNonzeroMagnitude))
+        if #available(iOS 15.0, *) {
+            self.easyInsuranceTableView.sectionHeaderTopPadding = CGFloat(0)
+        }
+        easyInsuranceTableView.contentInset = UIEdgeInsets.zero
+        easyInsuranceTableView.sectionHeaderHeight = UITableView.automaticDimension
+        easyInsuranceTableView.estimatedSectionHeaderHeight = 1
         easyInsuranceTableView.delegate = self
         easyInsuranceTableView.contentInsetAdjustmentBehavior = .never
         let customizable: CellRegisterable? = EasyInsuranceCellRegistration()
