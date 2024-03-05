@@ -17,6 +17,7 @@ class EasyInsuranceTVC: UITableViewCell {
     
     //MARK: -  Properties
     private var insuranceTypes: [Insurance]?
+    var callBack: ((Insurance) -> ())?
     
     //MARK: -  Methods
     override func awakeFromNib() {
@@ -93,7 +94,7 @@ extension EasyInsuranceTVC: UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let insurance = insuranceTypes?[safe: indexPath.row] {
-            EasyInsuranceRouter.shared.openURLInBrowser(urlString: insurance.redirectionURL)
+            self.callBack?(insurance)
         }
     }
     

@@ -10,8 +10,10 @@ import Combine
 import SmilesFontsManager
 import SmilesUtilities
 import SmilesSharedServices
+import SmilesReusableComponents
 
 final class EasyInsuranceVC: UIViewController {
+    
     
     //MARK: OUtlets
     @IBOutlet weak var easyInsuranceTableView: UITableView!
@@ -26,7 +28,7 @@ final class EasyInsuranceVC: UIViewController {
     var consentActionType: ConsentActionType?
     var redirectionURL: String?
     
-    
+    var pageSheetView: PageSheetView!
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,8 +138,8 @@ final class EasyInsuranceVC: UIViewController {
         return sections.first(where: { obj in
             return obj.identifier == identifier
         })?.index
+        
     }
-    
 }
 
 // MARK: - DATA BINDING EXTENSION
@@ -183,7 +185,7 @@ extension EasyInsuranceVC {
                 switch EasyInsuranceSectionIdentifier(rawValue: sectionIdentifier) {
                 case .insuranceCategories:
                     if let insuranceIndex = getSectionIndex(for: .insuranceCategories), let response = EasyInsuranceResponseModel.fromModuleFile() {
-                        dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true)
+                        dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true, completion: nil)
                         configureDataSource()
                     }
                     viewModel.getInsuranceData(categoryId: dependance.categoryId)
@@ -217,7 +219,15 @@ extension EasyInsuranceVC {
     // MARK: - configure InsuranceType
     private func configureInsuranceType(with response: EasyInsuranceResponseModel) {
         if let insuranceIndex = getSectionIndex(for: .insuranceCategories) {
-            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: false)
+            dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: false, completion: { [weak self] insurance in
+                
+                if let easyInsuranceConsent = self?.dependance.consentConfigList?.first(where: {$0.consentType == .easyInsurance}) {
+                    let title = easyInsuranceConsent.title
+                    self?.redirectionURL = insurance?.redirectionURL ?? ""
+                    self?.presentPageSheet(withConsentConfig: easyInsuranceConsent)
+                }
+                
+            })
             configureDataSource()
         }
     }
@@ -229,6 +239,33 @@ extension EasyInsuranceVC {
             (self.dataSource?.dataSources?[index] as? TableViewDataSource<T>)?.isDummy = false
             self.configureDataSource()
         }
+    }
+}
+
+extension EasyInsuranceVC {
+    
+    func presentPageSheet(withConsentConfig consent: ConsentConfigDO?) {
+        
+        pageSheetView = PageSheetView(delegate: self, pageSheetModel: consent)
+        pageSheetView.translatesAutoresizingMaskIntoConstraints = false
+        self.tabBarController?.view.addSubview(pageSheetView)
+        // Configure constraints for the pageSheetView
+        activateConstraints(subView: pageSheetView, superView: view)
+        pageSheetView.updateContainerHeight()
+        
+        
+    }
+}
+
+extension EasyInsuranceVC: PageSheetDelegate {
+    
+    func didSelectLeftButton() {
+        pageSheetView.removeFromSuperview()
+    }
+    
+    func didSelectRightButton() {
+        EasyInsuranceRouter.shared.openURLInBrowser(urlString: self.redirectionURL)
+        pageSheetView.removeFromSuperview()
     }
     
 }

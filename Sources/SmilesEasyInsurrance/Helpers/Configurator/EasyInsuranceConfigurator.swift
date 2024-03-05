@@ -13,9 +13,11 @@ import SmilesUtilities
 
 public struct EasyInsuranceDependance {
     public var categoryId: Int
+    public var consentConfigList : [ConsentConfigDO]?
     
-    public init(categoryId: Int) {
+    public init(categoryId: Int, consentConfigList: [ConsentConfigDO]?) {
         self.categoryId = categoryId
+        self.consentConfigList = consentConfigList
     }
 }
 
@@ -49,6 +51,7 @@ struct EasyInsuranceConfigurator {
         let insuranceUsecase = EasyInsuranceUseCase(services: service)
         let sectionsUsecase = SectionsUseCase()
         let faqsUsecase = FAQsUseCase()
+        
         let viewModel = EasyInsuranceViewModel(insuranceUsecase: insuranceUsecase, sectionsUseCase: sectionsUsecase, faqsUseCase: faqsUsecase)
         let viewController = EasyInsuranceVC(dependance: dependance, viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true

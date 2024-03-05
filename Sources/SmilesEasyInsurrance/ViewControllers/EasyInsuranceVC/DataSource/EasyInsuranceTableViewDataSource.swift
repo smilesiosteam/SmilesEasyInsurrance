@@ -9,6 +9,7 @@ import Foundation
 import SmilesUtilities
 import SmilesSharedServices
 import SmilesReusableComponents
+import SmilesOffers
 
 //MARK: - Make For FAQs
 extension TableViewDataSource where Model == FaqsDetail {
@@ -30,7 +31,7 @@ extension TableViewDataSource where Model == FaqsDetail {
 
 extension TableViewDataSource where Model == EasyInsuranceResponseModel {
     static func make(forInsurance insurance: EasyInsuranceResponseModel,
-                     reuseIdentifier: String = "EasyInsuranceTVC", data: String, isDummy: Bool = false) -> TableViewDataSource {
+                     reuseIdentifier: String = "EasyInsuranceTVC", data: String, isDummy: Bool = false, completion:((Insurance?) -> ())?) -> TableViewDataSource {
         return TableViewDataSource(
             models: [insurance],
             reuseIdentifier: reuseIdentifier,
@@ -39,6 +40,9 @@ extension TableViewDataSource where Model == EasyInsuranceResponseModel {
         ) { (insurance, cell, data, indexPath) in
             guard let cell = cell as? EasyInsuranceTVC else {return}
             cell.setupInsuranceData(insuranceTypes: insurance.insuranceTypes)
+            cell.callBack = { data in
+                completion?(data)
+            }
         }
     }
 }

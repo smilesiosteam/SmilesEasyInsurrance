@@ -109,6 +109,15 @@
       }
     },
     {
+      "identity" : "smilesreusablecomponents",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smilesiosteam/SmilesReusableComponents.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "baf9ca3c2c80ea5a69c9e62519dc8ba91b74a59c"
+      }
+    },
+    {
       "identity" : "smilessharedservices",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smilesiosteam/SmilesSharedServices.git",
@@ -132,7 +141,16 @@
       "location" : "https://github.com/smilesiosteam/SmilesUtilities.git",
       "state" : {
         "branch" : "main",
-        "revision" : "38dbf4e7154ea2619b3a1f24d324b57e2710b957"
+        "revision" : "64bc2faa681461a23caae400c48522f594523acf"
+      }
+    },
+    {
+      "identity" : "swifttheme",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wxxsw/SwiftTheme.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "f6a5442da8527f88e5b61b42131c003bd2d56803"
       }
     }
   ],
