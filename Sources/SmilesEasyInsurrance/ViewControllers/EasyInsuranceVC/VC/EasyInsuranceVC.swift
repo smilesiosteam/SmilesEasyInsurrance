@@ -14,7 +14,6 @@ import SmilesReusableComponents
 
 final class EasyInsuranceVC: UIViewController {
     
-    
     //MARK: OUtlets
     @IBOutlet weak var easyInsuranceTableView: UITableView!
     
@@ -48,9 +47,10 @@ final class EasyInsuranceVC: UIViewController {
     
     //MARK: - METHODS -
     private func setupViews() {
-        
-        setupTableView()
+       
+        setUpNavigationBar()
         bindViewModel()
+        setupTableView()
         viewModel.getSections(categoryId: dependance.categoryId)
         setUpNavigationBar()
         
@@ -174,7 +174,6 @@ extension EasyInsuranceVC {
     private func insuranceSectionsAPICalls() {
         
         if let sectionDetails = self.insuranceSections?.sectionDetails, !sectionDetails.isEmpty {
-            sections.removeAll()
             for (index, element) in sectionDetails.enumerated() {
                 guard let sectionIdentifier = element.sectionIdentifier, !sectionIdentifier.isEmpty else {
                     return
@@ -186,14 +185,12 @@ extension EasyInsuranceVC {
                 case .insuranceCategories:
                     if let insuranceIndex = getSectionIndex(for: .insuranceCategories), let response = EasyInsuranceResponseModel.fromModuleFile() {
                         dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: true, completion: nil)
-                        configureDataSource()
                     }
                     viewModel.getInsuranceData(categoryId: dependance.categoryId)
                     
                 case .faqs:
                     if let faqsIndex = getSectionIndex(for: .faqs), let response = FAQsDetailsResponse.fromModuleFile() {
                         dataSource?.dataSources?[faqsIndex] = TableViewDataSource.make(forFAQs: response.faqsDetails ?? [], data: "#FFFFFF", isDummy: true)
-                        configureDataSource()
                     }
                     viewModel.getFAQsDetails(faqId: Constants.faqsID)
                     
@@ -201,6 +198,7 @@ extension EasyInsuranceVC {
                 }
             }
         }
+        configureDataSource()
     }
     
 }
@@ -222,7 +220,6 @@ extension EasyInsuranceVC {
             dataSource?.dataSources?[insuranceIndex] = TableViewDataSource.make(forInsurance: response, data: "#FFFFFF", isDummy: false, completion: { [weak self] insurance in
                 
                 if let easyInsuranceConsent = self?.dependance.consentConfigList?.first(where: {$0.consentType == .easyInsurance}) {
-                    let title = easyInsuranceConsent.title
                     self?.redirectionURL = insurance?.redirectionURL ?? ""
                     self?.presentPageSheet(withConsentConfig: easyInsuranceConsent)
                 }

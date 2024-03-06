@@ -9,7 +9,6 @@ import Foundation
 import SmilesUtilities
 import SmilesSharedServices
 import SmilesReusableComponents
-import SmilesOffers
 
 //MARK: - Make For FAQs
 extension TableViewDataSource where Model == FaqsDetail {
