@@ -47,6 +47,6 @@ final class FAQsUseCase: FAQsUseCaseProtocol {
 extension FAQsUseCase {
     enum State {
         case fetchFAQsDidSucceed(response: FAQsDetailsResponse)
-        case fetchFAQsDidFail(error: NetworkError)
+        case fetchFAQsDidFail(error: Error)
     }
 }
