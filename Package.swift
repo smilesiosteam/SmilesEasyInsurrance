@@ -25,6 +25,7 @@ let package = Package(
         .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.1.0"),
         .package(url: "https://github.com/smilesiosteam/SmilesReusableComponents.git", branch: "main"),
         .package(url: "https://github.com/smilesiosteam/SmilesSharedServices.git", branch: "main"),
+        .package(url: "https://github.com/smilesiosteam/SmilesTests.git", branch: "main"),
     ],
     targets: [
         
@@ -45,7 +46,8 @@ let package = Package(
         ),
         .testTarget(
             name: "SmilesEasyInsurranceTests",
-            dependencies: ["SmilesEasyInsurrance"]
+            dependencies: ["SmilesEasyInsurrance","SmilesTests"],
+            resources: [.process("Resources")]
         ),
     ]
 )

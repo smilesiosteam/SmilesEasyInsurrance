@@ -44,8 +44,26 @@ final class FAQsUseCase: FAQsUseCaseProtocol {
     }
     
 }
+
+
 extension FAQsUseCase {
-    enum State {
+    
+    enum State: Equatable {
+        // Implement the Equatable conformance
+        static func == (lhs: FAQsUseCase.State, rhs: FAQsUseCase.State) -> Bool {
+            switch (lhs, rhs) {
+            case let (.fetchFAQsDidSucceed(lhsResponse), .fetchFAQsDidSucceed(rhsResponse)):
+                // Compare the associated values of fetchFAQsDidSucceed case
+                return lhsResponse == rhsResponse
+            case let (.fetchFAQsDidFail(lhsError), .fetchFAQsDidFail(rhsError)):
+                // Compare the associated values of fetchFAQsDidFail case
+                return lhsError.localizedDescription == rhsError.localizedDescription
+            default:
+                // If the cases are different, enums are not equal
+                return false
+            }
+        }
+        
         case fetchFAQsDidSucceed(response: FAQsDetailsResponse)
         case fetchFAQsDidFail(error: Error)
     }

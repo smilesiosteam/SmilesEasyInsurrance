@@ -1,0 +1,25 @@
+{
+  "insuranceTypes" : [
+    {
+      "insuranceTypeTitle" : "Life",
+      "insuranceTypeImageUrl" : "https://life.insurance.image.com",
+      "redirectionUrl" : "https://life.insurance.com"
+    },
+    {
+      "insuranceTypeTitle" : "Travel",
+      "insuranceTypeImageUrl" : "https://image.url.com",
+      "redirectionUrl" : "https://redirection.url.com"
+    },
+    {
+      "insuranceTypeTitle" : "Life",
+      "insuranceTypeImageUrl" : "https://life.insurance.image.com",
+      "redirectionUrl" : "https://life.insurance.com"
+    },
+    {
+      "insuranceTypeTitle" : "Travel",
+      "insuranceTypeImageUrl" : "https://image.url.com",
+      "redirectionUrl" : "https://redirection.url.com"
+    }
+  ],
+  "extTransactionId" : "3734411129927"
+}

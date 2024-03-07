@@ -25,7 +25,7 @@ final class EasyInsuranceServiceHandler: EasyInsuranceServiceHandlerProtocol {
     }
     
     // MARK: - Functions
-    func getInsuranceDetail(categoryId: Int) -> AnyPublisher<EasyInsuranceResponseModel, NetworkingLayer.NetworkError> {
+    func getInsuranceDetail(categoryId: Int) -> AnyPublisher<EasyInsuranceResponseModel,NetworkError> {
         let request = EasyInsuranceRequestModel(categoryId: categoryId)
         return repository.getInsuranceDetail(request: request)
     }

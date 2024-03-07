@@ -18,8 +18,6 @@ final class EasyInsuranceUseCase: EasyInsuranceCaseProtocol {
     
     private let services: EasyInsuranceServiceHandlerProtocol
     private var cancellables = Set<AnyCancellable>()
-    private let faqsViewModel = FAQsViewModel()
-    private var faqsUseCaseInput: PassthroughSubject<FAQsViewModel.Input, Never> = .init()
     
     init(services: EasyInsuranceServiceHandlerProtocol) {
         self.services = services
@@ -35,7 +33,11 @@ final class EasyInsuranceUseCase: EasyInsuranceCaseProtocol {
                         promise(.success(.fetchInsuranceTypeDidfail(error: error.localizedDescription)))
                     }
                 } receiveValue: { response in
-                    promise(.success(.fetchInsuranceTypeDidSucceed(response: response)))
+                    
+                    if let responseCode = response.responseCode, !responseCode.isEmpty {                        promise(.success(.fetchInsuranceTypeDidfail(error: response.responseMsg ?? "")))
+                    } else {
+                        promise(.success(.fetchInsuranceTypeDidSucceed(response: response)))
+                    }
                 }
                 .store(in: &cancellables)
             
@@ -48,7 +50,8 @@ final class EasyInsuranceUseCase: EasyInsuranceCaseProtocol {
 
 // MARK: - STATE -
 extension EasyInsuranceUseCase {
-    enum State {
+    
+    enum State: Equatable {
         case fetchInsuranceTypeDidSucceed(response: EasyInsuranceResponseModel)
         case fetchInsuranceTypeDidfail(error: String)
     }
