@@ -18,8 +18,12 @@ protocol FAQsUseCaseProtocol {
 final class FAQsUseCase: FAQsUseCaseProtocol {
     
     public var fAQsUseCaseInput: PassthroughSubject<FAQsViewModel.Input, Never> = .init()
-    private let fAQsViewModel = FAQsViewModel()
+    private let fAQsViewModel: FAQsViewModelProtocol
     private var cancellables = Set<AnyCancellable>()
+    
+    init(fAQsViewModel: FAQsViewModelProtocol = FAQsViewModel()) {
+        self.fAQsViewModel = fAQsViewModel
+    }
     
     func getFAQsDetails(faqId: Int, baseUrl: String) -> Future<FAQsUseCase.State, Never> {
         return Future<State, Never> { [weak self] promise in

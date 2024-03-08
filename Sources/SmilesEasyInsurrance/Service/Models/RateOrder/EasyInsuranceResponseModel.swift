@@ -41,11 +41,13 @@ extension EasyInsuranceResponseModel: Equatable {
 // MARK: - Insurance
 class Insurance: Codable, Equatable {
     static func == (lhs: Insurance, rhs: Insurance) -> Bool {
-        return lhs.insuranceTypeTitle == rhs.insuranceTypeTitle
+        lhs.insuranceTypeTitle == rhs.insuranceTypeTitle
     }
     
+   
     
-    let insuranceTypeTitle: String?
+    
+    var insuranceTypeTitle: String?
     let insuranceTypeImageURL, redirectionURL: String?
 
     enum CodingKeys: String, CodingKey {
