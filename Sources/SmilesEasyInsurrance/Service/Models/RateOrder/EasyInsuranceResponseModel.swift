@@ -32,32 +32,18 @@ class EasyInsuranceResponseModel: BaseMainResponse {
 extension EasyInsuranceResponseModel: Equatable {
     static func == (lhs: EasyInsuranceResponseModel, rhs: EasyInsuranceResponseModel) -> Bool {
         // Check if both insuranceTypes arrays are nil or have equal count
-        guard let lhsInsuranceTypes = lhs.insuranceTypes, let rhsInsuranceTypes = rhs.insuranceTypes else {
-            return false
-        }
+       return lhs.insuranceTypes == rhs.insuranceTypes
         
-        // Compare each element in the arrays
-        for (index, lhsInsurance) in lhsInsuranceTypes.enumerated() {
-            // Ensure that corresponding elements are not nil
-            guard let lhsTitle = lhsInsurance.insuranceTypeTitle,
-                  let rhsTitle = rhsInsuranceTypes[index].insuranceTypeTitle else {
-                return false
-            }
-            
-            // Compare the titles
-            if lhsTitle != rhsTitle {
-                return false
-            }
-        }
-        
-        // All elements are equal
-        return true
     }
 }
 
 
 // MARK: - Insurance
-class Insurance: Codable {
+class Insurance: Codable, Equatable {
+    static func == (lhs: Insurance, rhs: Insurance) -> Bool {
+        return lhs.insuranceTypeTitle == rhs.insuranceTypeTitle
+    }
+    
     
     let insuranceTypeTitle: String?
     let insuranceTypeImageURL, redirectionURL: String?
